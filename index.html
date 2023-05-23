@@ -60,13 +60,17 @@ const show = () => {
       <img src=${img}>
       </a>
       <div class=techtagline>${t.tagline}</div>
-      <div class=company>by <a href=${c.url}>${t.companyname}</a></div>
+      <div class=company>by <a href=${c.url}>${t.companyname}</div>
+      <span class=techtag>${t.tag}</span>
+
     `;
     divtechs.appendChild(div);
     n++;
   }
   ntechs.textContent = n + "件の技";
 };
+
+chkprizes["世界シェア1位"].checked = true;
 
 Object.values(chkprizes).forEach(c => c.onchange = () => show());
 Object.values(chkcities).forEach(c => c.onchange = () => show());
