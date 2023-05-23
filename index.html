@@ -1,0 +1,121 @@
+<!DOCTYPE html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><link rel="icon" href="data:">
+<title>福井の世界一の技 / 福井の日本一の技 - 実は福井の技オープンデータより</title>
+</head><body>
+<h1>福井の世界一の技 / 福井の日本一の技</h1>
+
+<main id=main>
+<div id=divtags></div>
+<div id=ntechs></div>
+<div id=divtechs></div>
+</main>
+
+<script type="module">
+import { CSV } from "https://js.sabae.cc/CSV.js";
+import { ArrayUtil } from "https://js.sabae.cc/ArrayUtil.js";
+
+const companies = await CSV.fetchJSON("./fukui-tech-company.csv");
+const techs = await CSV.fetchJSON("./fukui-tech-detail.csv");
+ArrayUtil.shuffle(techs);
+console.log(techs);
+
+const makeCheckboxes = (prizes) => {
+  const chkprizes = {};
+  const div = document.createElement("div");
+  for (const p of prizes) {
+    const l = document.createElement("label");
+    const chk = document.createElement("input");
+    const span = document.createElement("span");
+    chk.type = "checkbox";
+    l.appendChild(chk);
+    span.textContent = p;
+    l.appendChild(span);
+    chk.value = p;
+    div.appendChild(l);
+    chkprizes[p] = chk;
+  }
+  divtags.appendChild(div);
+  return chkprizes;
+};
+
+const prizes = ArrayUtil.toUnique(techs.map(t => t.tag).filter(t => t)).sort();
+const chkprizes = makeCheckboxes(prizes);
+
+const cities = ArrayUtil.toUnique(companies.map(c => c.city)).sort();
+const chkcities = makeCheckboxes(cities);
+
+const show = () => {
+  divtechs.innerHTML = "";
+  const nochks = Object.values(chkprizes).find(c => c.checked) == null;
+  const nochkscity = Object.values(chkcities).find(c => c.checked) == null;
+  let n = 0;
+  for (const t of techs) {
+    if (!nochks && (!t.tag || !chkprizes[t.tag].checked)) continue;
+    const c = companies.find(c => c.companyname == t.companyname);
+    if (!nochkscity && !chkcities[c.city].checked) continue;
+    const div = document.createElement("div");
+    const img = "./images-cache/" + t.img.substring(63);
+    div.innerHTML = `
+      <a href=${t.srcurl}>
+      <div class=techname>${t.techname} (${c.city})</div>
+      <img src=${img}>
+      </a>
+      <div class=techtagline>${t.tagline}</div>
+      <div class=company>by <a href=${c.url}>${t.companyname}</a></div>
+    `;
+    divtechs.appendChild(div);
+    n++;
+  }
+  ntechs.textContent = n + "件の技";
+};
+
+Object.values(chkprizes).forEach(c => c.onchange = () => show());
+Object.values(chkcities).forEach(c => c.onchange = () => show());
+
+show();
+</script>
+
+<style>
+body {
+  text-align: center;
+  font-family: sans-serif;
+}
+#divtechs {
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+#divtechs > div {
+  display: inline-block;
+  padding: .5em;
+  background-color: #f1f1f1;
+  margin: .2em;
+  width: 30vw;
+}
+#divtechs img {
+  width: 100%;
+}
+.techname {
+  font-size: 110%;
+  font-weight: bold;
+}
+#divtechs a {
+  text-decoration: none;
+  color: black !important;
+}
+.techtagline {
+  font-size: 80%;
+}
+#ntechs {
+  padding: .8em;
+  font-size: 130%;
+  font-weight: bold;
+}
+#divtags > div {
+  margin: .5em 0;
+}
+</style>
+
+<hr>
+Data: <a href=http://info.pref.fukui.jp/tisan/sangakukan/jitsuwafukui/>実は福井の技</a> → <a href=https://github.com/code4fukui/fukui-tech/>実は福井の技オープンデータ CSV</a><br>
+<a href=https://github.com/code4fukui/fukui-tech/>src on GitHub</a>
+
+</body></html>
