@@ -1,5 +1,7 @@
 # fukui-tech
 
+> 日本語のREADMEはこちらです: [README.ja.md](README.ja.md)
+
 A website that introduces advanced manufacturing technologies and company information of enterprises in Fukui Prefecture, Japan.
 
 ## Demo
