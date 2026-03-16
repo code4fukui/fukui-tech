@@ -16,4 +16,4 @@ https://code4fukui.github.io/fukui-tech/
 The data is sourced from the "Jitsu wa Fukui" (It's Actually Fukui) website, which is an introduction site for advanced manufacturing technologies and companies in Fukui Prefecture.
 
 ## License
-This project is licensed under the MIT License.
+MIT License — see [LICENSE](LICENSE).
